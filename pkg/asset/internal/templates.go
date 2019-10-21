@@ -184,9 +184,9 @@ spec:
           readOnly: true
       hostNetwork: true
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        node.kubernetes.io/master: ""
       tolerations:
-      - key: node-role.kubernetes.io/master
+      - key: node.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
       volumes:
@@ -313,10 +313,10 @@ spec:
       serviceAccountName: pod-checkpointer
       hostNetwork: true
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        node.kubernetes.io/master: ""
       restartPolicy: Always
       tolerations:
-      - key: node-role.kubernetes.io/master
+      - key: node.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
       volumes:
@@ -440,13 +440,13 @@ spec:
           mountPath: /etc/ssl/certs
           readOnly: true
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        node.kubernetes.io/master: ""
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
       serviceAccountName: kube-controller-manager
       tolerations:
-      - key: node-role.kubernetes.io/master
+      - key: node.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
       volumes:
@@ -585,12 +585,12 @@ spec:
           initialDelaySeconds: 15
           timeoutSeconds: 15
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        node.kubernetes.io/master: ""
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
       tolerations:
-      - key: node-role.kubernetes.io/master
+      - key: node.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
 `)
@@ -850,7 +850,7 @@ spec:
     spec:
       serviceAccountName: coredns
       tolerations:
-        - key: node-role.kubernetes.io/master
+        - key: node.kubernetes.io/master
           effect: NoSchedule
       containers:
         - name: coredns
