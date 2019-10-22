@@ -9,7 +9,7 @@ coreos:
         [Service]
         EnvironmentFile=/etc/environment
         Environment=KUBELET_IMAGE_URL=docker://k8s.gcr.io/hyperkube
-        Environment=KUBELET_IMAGE_TAG=v1.13.3
+        Environment=KUBELET_IMAGE_TAG=v1.16.1
         Environment="RKT_RUN_ARGS=--uuid-file-save=/var/cache/kubelet-pod.uuid \
           --volume var-lib-cni,kind=host,source=/var/lib/cni \
           --volume var-lib-kubelet,kind=host,source=/var/lib/kubelet \
@@ -29,7 +29,6 @@ coreos:
         ExecStartPre=/bin/mkdir -p /var/lib/kubelet/pki
         ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/cache/kubelet-pod.uuid
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
-          --allow-privileged \
           --anonymous-auth=false \
           --cert-dir=/var/lib/kubelet/pki \
           --client-ca-file=/etc/kubernetes/ca.crt \
@@ -41,7 +40,7 @@ coreos:
           --kubeconfig=/etc/kubernetes/kubeconfig \
           --lock-file=/var/run/lock/kubelet.lock \
           --network-plugin=cni \
-          --node-labels=node-role.kubernetes.io/master \
+          --node-labels=node.kubernetes.io/master \
           --pod-manifest-path=/etc/kubernetes/manifests \
           --rotate-certificates
         ExecStop=-/usr/bin/rkt stop --uuid-file=/var/cache/kubelet-pod.uuid
