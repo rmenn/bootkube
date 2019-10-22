@@ -146,7 +146,7 @@ spec:
         image: {{ .Images.Hyperkube }}
         command:
         - /hyperkube
-        - apiserver
+        - kube-apiserver
         - --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeClaimResize,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,Priority,NodeRestriction
         - --advertise-address=$(POD_IP)
         - --allow-privileged=true
@@ -216,7 +216,7 @@ spec:
     image: {{ .Images.Hyperkube }}
     command:
     - /hyperkube
-    - apiserver
+    - kube-apiserver
     - --advertise-address=$(POD_IP)
     - --allow-privileged=true
     - --authorization-mode=Node,RBAC
@@ -412,7 +412,7 @@ spec:
         image: {{ .Images.Hyperkube }}
         command:
         - ./hyperkube
-        - controller-manager
+        - kube-controller-manager
         - --use-service-account-credentials
         - --allocate-node-cidrs=true
         - --cloud-provider={{ .CloudProvider }}
@@ -493,7 +493,7 @@ spec:
     image: {{ .Images.Hyperkube }}
     command:
     - ./hyperkube
-    - controller-manager
+    - kube-controller-manager
     - --allocate-node-cidrs=true
     - --cluster-cidr={{ .PodCIDR }}
     - --service-cluster-ip-range={{ .ServiceCIDR }}
@@ -576,7 +576,7 @@ spec:
         image: {{ .Images.Hyperkube }}
         command:
         - ./hyperkube
-        - scheduler
+        - kube-scheduler
         - --leader-elect=true
         livenessProbe:
           httpGet:
@@ -606,7 +606,7 @@ spec:
     image: {{ .Images.Hyperkube }}
     command:
     - ./hyperkube
-    - scheduler
+    - kube-scheduler
     - --kubeconfig=/etc/kubernetes/secrets/kubeconfig
     - --leader-elect=true
     volumeMounts:
@@ -657,7 +657,7 @@ spec:
         image: {{ .Images.Hyperkube }}
         command:
         - ./hyperkube
-        - proxy
+        - kube-proxy
         - --cluster-cidr={{ .PodCIDR }}
         - --hostname-override=$(NODE_NAME)
         - --kubeconfig=/etc/kubernetes/kubeconfig
