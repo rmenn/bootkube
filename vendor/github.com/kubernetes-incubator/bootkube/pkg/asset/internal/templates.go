@@ -146,7 +146,7 @@ spec:
         image: {{ .Images.Hyperkube }}
         command:
         - /hyperkube
-        - apiserver
+        - kube-apiserver
         - --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeClaimResize,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,Priority,NodeRestriction
         - --advertise-address=$(POD_IP)
         - --allow-privileged=true
@@ -184,9 +184,9 @@ spec:
           readOnly: true
       hostNetwork: true
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        node.kubernetes.io/master: ""
       tolerations:
-      - key: node-role.kubernetes.io/master
+      - key: node.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
       volumes:
@@ -216,7 +216,7 @@ spec:
     image: {{ .Images.Hyperkube }}
     command:
     - /hyperkube
-    - apiserver
+    - kube-apiserver
     - --advertise-address=$(POD_IP)
     - --allow-privileged=true
     - --authorization-mode=Node,RBAC
@@ -313,10 +313,10 @@ spec:
       serviceAccountName: pod-checkpointer
       hostNetwork: true
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        node.kubernetes.io/master: ""
       restartPolicy: Always
       tolerations:
-      - key: node-role.kubernetes.io/master
+      - key: node.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
       volumes:
@@ -412,7 +412,7 @@ spec:
         image: {{ .Images.Hyperkube }}
         command:
         - ./hyperkube
-        - controller-manager
+        - kube-controller-manager
         - --use-service-account-credentials
         - --allocate-node-cidrs=true
         - --cloud-provider={{ .CloudProvider }}
@@ -440,13 +440,13 @@ spec:
           mountPath: /etc/ssl/certs
           readOnly: true
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        node.kubernetes.io/master: ""
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
       serviceAccountName: kube-controller-manager
       tolerations:
-      - key: node-role.kubernetes.io/master
+      - key: node.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
       volumes:
@@ -493,7 +493,7 @@ spec:
     image: {{ .Images.Hyperkube }}
     command:
     - ./hyperkube
-    - controller-manager
+    - kube-controller-manager
     - --allocate-node-cidrs=true
     - --cluster-cidr={{ .PodCIDR }}
     - --service-cluster-ip-range={{ .ServiceCIDR }}
@@ -576,7 +576,7 @@ spec:
         image: {{ .Images.Hyperkube }}
         command:
         - ./hyperkube
-        - scheduler
+        - kube-scheduler
         - --leader-elect=true
         livenessProbe:
           httpGet:
@@ -585,12 +585,12 @@ spec:
           initialDelaySeconds: 15
           timeoutSeconds: 15
       nodeSelector:
-        node-role.kubernetes.io/master: ""
+        node.kubernetes.io/master: ""
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
       tolerations:
-      - key: node-role.kubernetes.io/master
+      - key: node.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
 `)
@@ -606,7 +606,7 @@ spec:
     image: {{ .Images.Hyperkube }}
     command:
     - ./hyperkube
-    - scheduler
+    - kube-scheduler
     - --kubeconfig=/etc/kubernetes/secrets/kubeconfig
     - --leader-elect=true
     volumeMounts:
@@ -657,7 +657,7 @@ spec:
         image: {{ .Images.Hyperkube }}
         command:
         - ./hyperkube
-        - proxy
+        - kube-proxy
         - --cluster-cidr={{ .PodCIDR }}
         - --hostname-override=$(NODE_NAME)
         - --kubeconfig=/etc/kubernetes/kubeconfig
@@ -850,7 +850,7 @@ spec:
     spec:
       serviceAccountName: coredns
       tolerations:
-        - key: node-role.kubernetes.io/master
+        - key: node.kubernetes.io/master
           effect: NoSchedule
       containers:
         - name: coredns
