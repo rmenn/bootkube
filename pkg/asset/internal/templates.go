@@ -806,13 +806,16 @@ data:
     .:53 {
         errors
         health
-        kubernetes cluster.local {{ .ServiceCIDR }} {
+        ready
+        log . {
+            class error
+        }
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
             pods insecure
-            upstream
             fallthrough in-addr.arpa ip6.arpa
         }
         prometheus :9153
-        proxy . /etc/resolv.conf
+        forward . /etc/resolv.conf
         cache 30
         loop
         reload
