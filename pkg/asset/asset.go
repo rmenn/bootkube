@@ -194,8 +194,9 @@ func NewDefaultAssets(conf Config) (Assets, error) {
 }
 
 type Asset struct {
-	Name string
-	Data []byte
+	Name    string
+	Data    []byte
+	Matcher patchMatch
 }
 
 type Assets []Asset

@@ -47,6 +47,7 @@ var (
 		serviceCIDR         string
 		cloudProvider       string
 		networkProvider     string
+		patchDir            string
 	}
 
 	imageVersions = asset.DefaultImages
@@ -67,6 +68,7 @@ func init() {
 	cmdRender.Flags().StringVar(&renderOpts.serviceCIDR, "service-cidr", "10.3.0.0/24", "The CIDR range of cluster services.")
 	cmdRender.Flags().StringVar(&renderOpts.cloudProvider, "cloud-provider", "", "The provider for cloud services.  Empty string for no provider")
 	cmdRender.Flags().StringVar(&renderOpts.networkProvider, "network-provider", "flannel", "CNI network provider (flannel or experimental-canal).")
+	cmdRender.Flags().StringVar(&renderOpts.patchDir, "patch-dir", "", "Output path for rendered assets")
 }
 
 func runCmdRender(cmd *cobra.Command, args []string) error {
@@ -79,7 +81,17 @@ func runCmdRender(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	if renderOpts.patchDir != "" {
+		patches, err := asset.ReadPatchDir(renderOpts.patchDir)
+		if err != nil {
+			return err
+		}
 
+		err = as.Patch(patches)
+		if err != nil {
+			return err
+		}
+	}
 	return as.WriteFiles(renderOpts.assetDir)
 }
 
