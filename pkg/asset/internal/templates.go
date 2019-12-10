@@ -843,7 +843,9 @@ data:
   Corefile: |
     .:53 {
         errors
-        health
+        health {
+          lameduck 5s
+        }
         ready
         log . {
             class error
@@ -871,24 +873,33 @@ metadata:
     kubernetes.io/name: "CoreDNS"
     kubernetes.io/cluster-service: "true"
 spec:
-  # replicas: not specified here:
-  # 1. In order to make Addon Manager do not reconcile this replicas parameter.
-  # 2. Default is 1.
-  # 3. Will be tuned in real time if DNS horizontal auto-scaling is turned on.
+  replicas : 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
   selector:
     matchLabels:
-      k8s-app: kube-dns
+      k8s-app: coredns
   template:
     metadata:
       labels:
-        k8s-app: kube-dns
+        k8s-app: coredns
       annotations:
         seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: k8s-app
+                  operator: In
+                  values:
+                  - coredns
+              topologyKey: kubernetes.io/hostname
       serviceAccountName: coredns
       tolerations:
         - key: node-role.kubernetes.io/master
@@ -927,6 +938,11 @@ spec:
             timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8181
+              scheme: HTTP
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
